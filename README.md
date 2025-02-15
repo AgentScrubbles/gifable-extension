@@ -48,3 +48,5 @@ Upload and you are finished!
 - (Maybe) finding a way to union your Gifable instance with Tenor/Giphy
 - Support for other clients
 - Query for gifs anywhere on any site and simply display the URL to copy
+- Add option in Element in hover menu (where you can react to an image) to also give the option to upload to Gifable to expand your collection
+- Publish the extension and use browser sync!

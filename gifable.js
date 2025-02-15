@@ -1,4 +1,12 @@
-// content.js
+const mimeTypes = {
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpeg",
+    "png": "image/png",
+    "gif": "image/gif",
+    "webp": "image/webp",
+    "mp4": "video/mp4"
+};
+
 (function () {
 
     let isOpen = false;
@@ -8,6 +16,15 @@
         gifableUrl = data.GIFABLE_URL;
         gifableApiToken = data.GIFABLE_TOKEN;
     });
+
+    function getFileExtension(url) {
+        return url.split('.').pop().split(/\#|\?/)[0]; // Handles query params and fragments
+    }
+
+    function getMimeType(url) {
+        const ext = getFileExtension(url).toLowerCase();
+        return mimeTypes[ext] || "image/gif"; // Default fallback MIME type
+    }
 
     function sendMessage(message, cb) {
         let myPort = browser.runtime.connect({ name: "port-from-cs" });
@@ -31,12 +48,7 @@
 
     function createGifButton(target) {
         if (target.querySelector('.gif-button')) return;
-        debugger;
         
-        
-    
-
-
         const button = document.createElement('button');
         button.innerText = '🌈';
         button.className = 'gif-button';
@@ -106,11 +118,14 @@
 
     async function simulateFileDrop(imageElement, blob, gif) {
          // Convert image URL to Blob
-        const file = new File([blob], "image.gif", { type: "image/gif" });
+         const extension = getFileExtension(imageElement.src)
+         const mimeType = getMimeType(imageElement.src)
+        const file = new File([blob], `gifable.${extension}`, { type: mimeType });
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
 
-        const fileInput = document.querySelector('input[type="file"]');
+        const fileInput = document.querySelector('.mx_MessageComposer_actions input[type="file"]');
+        console.log('Uploading to', fileInput)
         if (!fileInput) {
             console.error("File input not found.");
             return;
